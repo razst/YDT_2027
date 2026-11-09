@@ -1,0 +1,50 @@
+2026-11-09 19:14:39,872 - INFO - _connect - Heartbeat from system (system 1 component 0)
+2026-11-09 19:18:21,211 - INFO - _connect - Heartbeat from system (system 1 component 0)
+2026-11-09 19:18:21,212 - DEBUG - send_text - ARMED !!!!
+2026-11-09 19:18:21,242 - DEBUG - send_text - Unable to Take off
+2026-11-09 19:18:36,805 - INFO - _connect - Heartbeat from system (system 1 component 0)
+2026-11-09 19:18:36,811 - DEBUG - send_text - Unable to ARM. Exiting !!!
+2026-11-09 19:19:40,384 - INFO - _connect - Heartbeat from system (system 1 component 0)
+2026-11-09 19:19:40,390 - DEBUG - send_text - ARMED !!!!
+2026-11-09 19:19:40,397 - DEBUG - send_text - Mode changed to 4
+2026-11-09 19:19:40,404 - DEBUG - send_text - Taking off...
+2026-11-09 19:24:02,018 - INFO - _connect - Heartbeat from system (system 1 component 0)
+2026-11-09 19:24:02,026 - DEBUG - send_text - Unable to ARM. Exiting !!!
+2026-11-09 19:24:33,873 - INFO - _connect - Heartbeat from system (system 1 component 0)
+2026-11-09 19:24:33,877 - DEBUG - send_text - Mode changed to 4
+2026-11-09 19:24:33,884 - DEBUG - send_text - ARMED !!!!
+2026-11-09 19:24:33,895 - DEBUG - send_text - Taking off...
+2026-11-09 19:24:33,895 - INFO - ensure_height - Ensuring height 3m (tol: 0.5m)...
+2026-11-09 19:24:34,041 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:24:34,204 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:24:35,403 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:24:35,531 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:24:36,707 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:24:37,084 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:24:38,438 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:24:38,483 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:24:39,888 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:24:39,897 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:24:41,222 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:24:41,596 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:24:42,949 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:24:42,981 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:24:44,407 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:24:44,437 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:24:45,828 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:24:46,079 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:24:47,423 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:24:47,515 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:24:48,920 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:24:48,941 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:24:50,311 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:24:50,345 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:24:51,716 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:24:51,805 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:24:53,248 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:24:53,540 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-09 19:25:15,197 - INFO - _connect - Heartbeat from system (system 1 component 0)
+2026-11-09 19:25:15,206 - DEBUG - send_text - Mode changed to 4
+2026-11-09 19:25:15,214 - DEBUG - send_text - ARMED !!!!
+2026-11-09 19:25:15,224 - DEBUG - send_text - Taking off...
+2026-11-09 19:25:20,292 - DEBUG - send_text - Landing...

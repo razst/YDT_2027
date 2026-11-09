@@ -10,10 +10,11 @@ import os
 # MAV_COM="/dev/serial0"
 
 # MAV_COM="COM12"
+# MAV_COM="tcp:localhost:5763" # SITL com in mission planned
+MAV_COM="udp:127.0.0.1:14550" # SITL UDP in ubuntu
+
 # BAUD_RATE=115200
-# MAV_COM="tcp:localhost:5763" # SITL com
 BAUD_RATE=921600
-MAV_COM="tcp:localhost:5763" # SITL com
 MAV_MSG_FREQ = 10 # how often do we want to get messages from mavlink (in Hz)
 MAX_ALLOWED_ALT = 8  # Maximum allowed altitude in meters to prevent flyaways
 
