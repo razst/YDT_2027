@@ -48,9 +48,12 @@ class MavLinkHandler:
     # wait for the next message of type. msg_type can be str or list of str. passing empty string will return the next message of any type
     # for list of message type in ardupilot: https://ardupilot.org/copter/docs/ArduCopter_MAVLink_Messages.html#requestable-messages
     # some common ones: ATTITUDE, RAW_IMU, HEARTBEAT, WIND, RC_CHANNELS
-    def _get_message(self, msg_type:str):
+    def _get_message(self, msg_type:str, timeout=None):
         if msg_type == "" or msg_type is None:
-            msg = self._connection.recv_match(blocking=True)
+            if timeout is None:
+                msg = self._connection.recv_match(blocking=True)
+            else:
+                msg = self._connection.recv_match(blocking=True, timeout=timeout)
             if msg is None:
                 logger.warning("Timeout waiting for any message")
                 return None
@@ -58,7 +61,10 @@ class MavLinkHandler:
             return msg
 
         # Get the first message of the type (blocking)
-        msg = self._connection.recv_match(type=msg_type, blocking=True)
+        if timeout is None:
+            msg = self._connection.recv_match(type=msg_type, blocking=True)
+        else:
+            msg = self._connection.recv_match(type=msg_type, blocking=True, timeout=timeout)
         if msg is None:
             logger.warning(f"Timeout waiting for message of type {msg_type}")
             return None
@@ -71,6 +77,108 @@ class MavLinkHandler:
             msg = next_msg
 
         return msg        
+
+
+    def takeoff(self, takeoff_alt_meters, wait_until_reached=False, tolerance=0.5, timeout=30):
+        """Command takeoff and optionally wait for the requested relative altitude."""
+        if wait_until_reached and (tolerance < 0 or timeout <= 0):
+            raise ValueError("tolerance must be non-negative and timeout must be positive")
+
+        deadline = time.monotonic() + timeout if wait_until_reached else None
+
+        # ******* TAKEOFF ******** 
+        self._connection.mav.command_long_send(self._connection.target_system, self._connection.target_component,
+                                                mavutil.mavlink.MAV_CMD_NAV_TAKEOFF, 0, 0, 0, 0, 0, 0, 0, takeoff_alt_meters)
+        if deadline is None:
+            msg = self._connection.recv_match(type='COMMAND_ACK', blocking=True)
+        else:
+            remaining = deadline - time.monotonic()
+            msg = None if remaining <= 0 else self._connection.recv_match(
+                type='COMMAND_ACK', blocking=True, timeout=remaining
+            )
+        if msg is None:
+            error_msg = "Timeout waiting for TAKEOFF ACK"
+            self.send_text(error_msg)
+            raise MavLinkCommandError(error_msg)
+
+        if msg.result != 0:
+            self.send_text("Unable to Take off")
+            if wait_until_reached:
+                raise MavLinkCommandError("Unable to Take off")
+        else:
+            self.send_text("Taking off...")
+
+        if not wait_until_reached:
+            return
+
+        while True:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                error_msg = f"Timed out reaching takeoff altitude {takeoff_alt_meters}m"
+                self.send_text(error_msg)
+                raise MavLinkCommandError(error_msg)
+
+            current_height = self.get_curr_height(timeout=remaining)
+            if current_height is not None and abs(current_height - takeoff_alt_meters) <= tolerance:
+                self.send_text(f"Takeoff altitude reached: {current_height:.2f}m")
+                return True
+
+    def land(self, wait_until_reached=False, timeout=30):
+        # ******* Land ********
+        if wait_until_reached and timeout <= 0:
+            raise ValueError("timeout must be positive")
+
+        deadline = time.monotonic() + timeout if wait_until_reached else None
+        self._connection.mav.command_long_send(self._connection.target_system, self._connection.target_component,
+                                                mavutil.mavlink.MAV_CMD_NAV_LAND , 0, 0, 0, 0, 0, 0, 0, 0)
+        if deadline is None:
+            msg = self._connection.recv_match(type='COMMAND_ACK', blocking=True)
+        else:
+            remaining = deadline - time.monotonic()
+            msg = None if remaining <= 0 else self._connection.recv_match(
+                type='COMMAND_ACK', blocking=True, timeout=remaining
+            )
+        if msg is None:
+            error_msg = "Timeout waiting for LAND ACK"
+            self.send_text(error_msg)
+            raise MavLinkCommandError(error_msg)
+
+        if msg.result != 0:
+            self.send_text("Unable to land")
+            if wait_until_reached:
+                raise MavLinkCommandError("Unable to land")
+        else:
+            self.send_text("Landing...")
+
+        if not wait_until_reached:
+            return
+
+        while True:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                error_msg = "Timed out waiting for landing"
+                self.send_text(error_msg)
+                raise MavLinkCommandError(error_msg)
+
+            current_height = self.get_curr_height(timeout=remaining)
+            if current_height is not None and current_height <= 0.1:
+                self.send_text(f"Landing completed at {current_height:.2f}m")
+                return True
+    
+    def lock_heading(self, heading_degrees):
+        self._connection.mav.command_long_send(
+            self._connection.target_system,
+            self._connection.target_component,
+            mavutil.mavlink.MAV_CMD_CONDITION_YAW,
+            0,
+            heading_degrees,  # target angle (0=North, 90=East, 180=South, 270=West)
+            10,               # rotation speed deg/s
+            1,                # direction: 1=CW, -1=CCW
+            0,                # 0=absolute heading
+            0, 0, 0
+        )
+
+
 
     def set_motor_relay(self,relay,state):
         """
@@ -160,9 +268,9 @@ class MavLinkHandler:
             msg=self._get_message("HEARTBEAT")
         return msg.custom_mode
         
-    def get_curr_height(self):
+    def get_curr_height(self, timeout=None):
         # msg = self._connection.recv_match(type='GLOBAL_POSITION_INT', blocking=True)
-        msg = self._get_message('GLOBAL_POSITION_INT')
+        msg = self._get_message('GLOBAL_POSITION_INT', timeout=timeout)
         if msg:
             if msg.get_type() == 'GLOBAL_POSITION_INT':
                 alt_meter = msg.relative_alt / 1000
@@ -200,16 +308,6 @@ class MavLinkHandler:
 
         self.send_text(f"Timed out reaching height {target_height}m")
         return False
-
-    def takeoff(self,takeoff_alt_meters): 
-        # ******* TAKEOFF ******** 
-        self._connection.mav.command_long_send(self._connection.target_system, self._connection.target_component,
-                                                mavutil.mavlink.MAV_CMD_NAV_TAKEOFF, 0, 0, 0, 0, 0, 0, 0, takeoff_alt_meters)
-        msg = self._connection.recv_match(type='COMMAND_ACK',blocking=True)
-        if msg.result != 0:
-            self.send_text("Unable to Take off")
-        else:
-            self.send_text("Taking off...")
 
 
     def fly_gps_pos(self,lat,lon):
@@ -270,29 +368,6 @@ class MavLinkHandler:
                                 self._connection.target_component, int(0b00000111), q, 0,0,0,0.5))
 
 
-
-    def land(self):
-        # ******* Land ********
-        self._connection.mav.command_long_send(self._connection.target_system, self._connection.target_component,
-                                                mavutil.mavlink.MAV_CMD_NAV_LAND , 0, 0, 0, 0, 0, 0, 0, 0)
-        msg = self._connection.recv_match(type='COMMAND_ACK',blocking=True)
-        if msg.result != 0:
-            self.send_text("Unable to land")
-        else:
-            self.send_text("Landing...")
-    
-    def lock_heading(self, heading_degrees):
-        self._connection.mav.command_long_send(
-            self._connection.target_system,
-            self._connection.target_component,
-            mavutil.mavlink.MAV_CMD_CONDITION_YAW,
-            0,
-            heading_degrees,  # target angle (0=North, 90=East, 180=South, 270=West)
-            10,               # rotation speed deg/s
-            1,                # direction: 1=CW, -1=CCW
-            0,                # 0=absolute heading
-            0, 0, 0
-        )
 
     def send_ned_velocity(self,velocity_x, velocity_y, velocity_z, duration):
         """
