@@ -1,0 +1,6 @@
+# run gazebo sim with iris world
+gz sim -v4 -r iris_runway.sdf
+
+
+# run ardupilot SITL with gazebo plugin
+sim_vehicle.py -v ArduCopter -f gazebo-iris --model JSON --map --console
