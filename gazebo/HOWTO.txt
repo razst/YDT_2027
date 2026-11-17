@@ -1,6 +1,10 @@
 # run gazebo sim with iris world
-gz sim -v4 -r iris_runway.sdf
+gz sim -v4 -r ydt_2027_iris.sdf
 
 
 # run ardupilot SITL with gazebo plugin
 sim_vehicle.py -v ArduCopter -f gazebo-iris --model JSON --map --console
+
+
+# in a second terminal, show the downward camera feed with OpenCV (from gazebo/; press q to quit)
+python3 ../src/show_iris_camera.py

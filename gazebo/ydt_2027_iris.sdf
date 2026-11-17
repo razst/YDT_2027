@@ -120,7 +120,7 @@
 
     <!-- Red ball -->
     <model name="red_ball">
-      <pose>0.0 0.0 1.5 0 0 0</pose>
+      <pose>0.1 0.3 0.05 0 0 0</pose>
       <link name="link">
         <inertial>
           <mass>0.15</mass>
@@ -286,10 +286,12 @@
       </link>
     </model>
 
+    <!-- Keep the world axes in the GUI, but tag them so the camera can ignore them. -->
     <model name="axes">
       <static>1</static>
       <link name="link">
         <visual name="r">
+          <visibility_flags>2</visibility_flags>
           <cast_shadows>0</cast_shadows>
           <pose>5 0 0.1 0 0 0</pose>
           <geometry>
@@ -305,6 +307,7 @@
           </material>
         </visual>
         <visual name="g">
+          <visibility_flags>2</visibility_flags>
           <cast_shadows>0</cast_shadows>
           <pose>0 5 0.1 0 0 0</pose>
           <geometry>
@@ -320,6 +323,7 @@
           </material>
         </visual>
         <visual name="b">
+          <visibility_flags>2</visibility_flags>
           <cast_shadows>0</cast_shadows>
           <pose>0 0 5.1 0 0 0</pose>
           <geometry>
@@ -385,6 +389,8 @@
           <visualize>true</visualize>
           <topic>/iris/downward_camera</topic>
           <camera>
+            <!-- Default scene visuals use other bits; this excludes the axes' bit 2. -->
+            <visibility_mask>1</visibility_mask>
             <horizontal_fov>1.047</horizontal_fov>
             <vertical_fov>0.785</vertical_fov>
             <focal_frame>1</focal_frame>

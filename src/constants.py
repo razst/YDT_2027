@@ -11,8 +11,8 @@ import os
 
 # MAV_COM="COM12"
 # MAV_COM="tcp:localhost:5763" # SITL com in mission planned
-# MAV_COM="udp:127.0.0.1:14550" # SITL UDP in ubuntu
-MAV_COM="udp:172.29.160.1:14550" # SITL UDP in ubuntu inside windows WSL
+MAV_COM="udp:127.0.0.1:14550" # SITL UDP in ubuntu
+# MAV_COM="udp:172.29.160.1:14550" # SITL UDP in ubuntu inside windows WSL
 
 # BAUD_RATE=115200
 BAUD_RATE=921600
