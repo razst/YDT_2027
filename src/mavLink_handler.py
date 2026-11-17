@@ -123,7 +123,7 @@ class MavLinkHandler:
                 self.send_text(f"Takeoff altitude reached: {current_height:.2f}m")
                 return True
 
-    def land(self, wait_until_reached=False, timeout=30):
+    def land(self, wait_until_reached=False, timeout=60):
         # ******* Land ********
         if wait_until_reached and timeout <= 0:
             raise ValueError("timeout must be positive")
