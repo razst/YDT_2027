@@ -1,4 +1,5 @@
-# run gazebo sim with iris world
+# run Gazebo with the balls defined in the Iris world
+# run from the gazebo/ directory
 gz sim -v4 -r ydt_2027_iris.sdf
 
 
@@ -6,5 +7,9 @@ gz sim -v4 -r ydt_2027_iris.sdf
 sim_vehicle.py -v ArduCopter -f gazebo-iris --model JSON --map --console
 
 
-# in a second terminal, show the downward camera feed with OpenCV (from gazebo/; press q to quit)
-python3 ../src/show_iris_camera.py
+# in a third terminal, run the SITL-only ball pickup and climb mission
+python3 ../src/collect_ball.py
+
+
+# in another terminal, show the downward camera feed with OpenCV (from gazebo/; press q to quit)
+python3 ../test/show_iris_camera.py

@@ -256,11 +256,23 @@ class MavLinkHandler:
             self.send_text(error_msg)
             raise MavLinkCommandError(error_msg)
         elif msg.result != 0:
-            error_msg = "Unable to ARM"
-            self.send_text(f"{error_msg}. Exiting !!!")
+            result = mavutil.mavlink.enums["MAV_RESULT"].get(msg.result)
+            result_name = result.name if result is not None else "unknown result"
+            error_msg = (
+                f"Unable to ARM: autopilot returned {result_name} ({msg.result}), "
+                f"detail={msg.result_param2}. Check the SITL console for the "
+                "PreArm message explaining which check failed."
+            )
+            self.send_text(error_msg)
             raise MavLinkCommandError(error_msg)
         else:
             self.send_text("ARMED !!!!")
+
+    def is_armed(self):
+        msg = self._get_message("HEARTBEAT")
+        while msg.type == mavutil.mavlink.MAV_TYPE_GCS:
+            msg = self._get_message("HEARTBEAT")
+        return bool(msg.base_mode & mavutil.mavlink.MAV_MODE_FLAG_SAFETY_ARMED)
 
     def get_curr_mode(self):
         msg=self._get_message("HEARTBEAT")
@@ -278,6 +290,13 @@ class MavLinkHandler:
                 return alt_meter
             else:
                 self.send_text(f'didnt get the right message type')
+
+
+    def get_curr_gps_position(self, timeout=None):
+        msg = self._get_message("GLOBAL_POSITION_INT", timeout=timeout)
+        if msg is None:
+            return None
+        return msg.lat / 1e7, msg.lon / 1e7, msg.relative_alt / 1000
 
 
     def ensure_height(self, target_height, tolerance=0.5, timeout=30):
@@ -310,38 +329,72 @@ class MavLinkHandler:
         return False
 
 
-    def fly_gps_pos(self,lat,lon):
+    def fly_gps_pos(
+        self,
+        lat,
+        lon,
+        altitude_meters=10,
+        tolerance=0.5,
+        timeout=120,
+    ):
+        if not -90 <= lat <= 90 or not -180 <= lon <= 180:
+            raise ValueError("latitude and longitude are out of range")
+        if altitude_meters < 0 or tolerance < 0 or timeout <= 0:
+            raise ValueError(
+                "altitude and tolerance must be non-negative; timeout must be positive"
+            )
+
         self._check_guided_mode()
-        # ******* Fly to lat long ********
-        # in mission planner in full prarameter list, update WPNAV_SPEED !! to make sure we don't fly too fast
-        # see https://www.youtube.com/watch?v=yyt4VjBRG_Y
-        # https://ardupilot.org/dev/docs/copter-commands-in-guided-mode.html
-        # https://mavlink.io/en/messages/common.html#SET_POSITION_TARGET_LOCAL_NED
-        self._connection.mav.send(mavutil.mavlink.MAVLink_set_position_target_global_int_message(10, self._connection.target_system,
-                                self._connection.target_component, mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT, int(0b110111111000), int(lat * 10 ** 7), int(lon * 10 ** 7), 10, 0, 0, 0, 0, 0, 0, 1.57, 0.5))
-
         self.send_text("Flying to target...")
-        # we notice we get a few zero wp_dist - so wait until we get non zero wp_dist 
-        msg = self._connection.recv_match(type='NAV_CONTROLLER_OUTPUT', blocking=True)
-        wp_dist = msg.wp_dist
-        max_tries=0
-        while max_tries<20 and wp_dist==0 and self._check_guided_mode():
-            max_tries+=1
-            # msg = the_connection.recv_match(type='LOCAL_POSITION_NED', blocking=True)
-            msg = self._connection.recv_match(type='NAV_CONTROLLER_OUTPUT', blocking=True)
-            wp_dist = msg.wp_dist
-            # logger.debug(msg)
-            self.send_text("distance to target:"+str(msg.wp_dist))
+        deadline = time.monotonic() + timeout
 
-        # wait until we reach the wp (wp_dist=0)
-        while wp_dist>0 and self._check_guided_mode():
-            # msg = the_connection.recv_match(type='LOCAL_POSITION_NED', blocking=True)
-            msg = self._connection.recv_match(type='NAV_CONTROLLER_OUTPUT', blocking=True)
-            wp_dist = msg.wp_dist
-            # logger.debug(msg)
-            self.send_text("distance to target:"+str(msg.wp_dist))
+        while time.monotonic() < deadline:
+            self._connection.mav.send(
+                mavutil.mavlink.MAVLink_set_position_target_global_int_message(
+                    10,
+                    self._connection.target_system,
+                    self._connection.target_component,
+                    mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT,
+                    int(0b110111111000),
+                    int(lat * 1e7),
+                    int(lon * 1e7),
+                    altitude_meters,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1.57,
+                    0.5,
+                )
+            )
 
-        self.send_text("Target reached !")
+            position = self.get_curr_gps_position(
+                timeout=min(1.0, max(0, deadline - time.monotonic()))
+            )
+            if position is not None:
+                current_lat, current_lon, current_altitude = position
+                mean_latitude = math.radians((lat + current_lat) / 2)
+                north_meters = math.radians(lat - current_lat) * 6_371_000
+                east_meters = (
+                    math.radians(lon - current_lon)
+                    * 6_371_000
+                    * math.cos(mean_latitude)
+                )
+                horizontal_distance = math.hypot(north_meters, east_meters)
+                if (
+                    horizontal_distance <= tolerance
+                    and abs(current_altitude - altitude_meters) <= tolerance
+                ):
+                    self.send_text("Target reached !")
+                    return
+
+            self._check_guided_mode()
+
+        error_msg = f"Timed out flying to target ({lat}, {lon})"
+        self.send_text(error_msg)
+        raise MavLinkCommandError(error_msg)
 
 
     def fly_by_angles(self,roll_angle,pitch_angle,yaw_angle,duration,send_text=True):

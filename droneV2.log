@@ -1277,3 +1277,115 @@
 2026-11-17 14:58:23,139 - DEBUG - send_text - Current height is 3.87 meters
 2026-11-17 14:58:23,239 - DEBUG - send_text - Current height is 3.92 meters
 2026-11-17 14:58:23,240 - DEBUG - send_text - Takeoff altitude reached: 3.92m
+2026-11-17 17:52:03,632 - INFO - _connect - Heartbeat from system (system 1 component 0)
+2026-11-17 17:52:03,637 - DEBUG - send_text - Mode changed to 4
+2026-11-17 17:52:03,643 - DEBUG - send_text - ARMED !!!!
+2026-11-17 17:52:03,656 - DEBUG - send_text - Taking off...
+2026-11-17 17:52:03,886 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:04,102 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:04,319 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:04,549 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:04,756 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:04,956 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:05,200 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:05,416 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:05,650 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:05,898 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:06,117 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:06,339 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:06,549 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:06,781 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:07,014 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:07,199 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:07,405 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:07,608 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:07,800 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:08,008 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:08,208 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:08,445 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:08,652 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:08,871 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:09,150 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:09,343 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:09,555 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:09,736 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:09,923 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:10,115 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:10,329 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:10,450 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-17 17:52:10,580 - DEBUG - send_text - Current height is 0.01 meters
+2026-11-17 17:52:10,705 - DEBUG - send_text - Current height is 0.03 meters
+2026-11-17 17:52:10,862 - DEBUG - send_text - Current height is 0.06 meters
+2026-11-17 17:52:10,992 - DEBUG - send_text - Current height is 0.09 meters
+2026-11-17 17:52:11,143 - DEBUG - send_text - Current height is 0.14 meters
+2026-11-17 17:52:11,264 - DEBUG - send_text - Current height is 0.2 meters
+2026-11-17 17:52:11,378 - DEBUG - send_text - Current height is 0.26 meters
+2026-11-17 17:52:11,506 - DEBUG - send_text - Current height is 0.33 meters
+2026-11-17 17:52:11,654 - DEBUG - send_text - Current height is 0.41 meters
+2026-11-17 17:52:11,783 - DEBUG - send_text - Current height is 0.5 meters
+2026-11-17 17:52:11,914 - DEBUG - send_text - Current height is 0.6 meters
+2026-11-17 17:52:12,044 - DEBUG - send_text - Current height is 0.72 meters
+2026-11-17 17:52:12,176 - DEBUG - send_text - Current height is 0.84 meters
+2026-11-17 17:52:12,286 - DEBUG - send_text - Current height is 0.98 meters
+2026-11-17 17:52:12,397 - DEBUG - send_text - Current height is 1.12 meters
+2026-11-17 17:52:12,505 - DEBUG - send_text - Current height is 1.28 meters
+2026-11-17 17:52:12,614 - DEBUG - send_text - Current height is 1.45 meters
+2026-11-17 17:52:12,741 - DEBUG - send_text - Current height is 1.63 meters
+2026-11-17 17:52:12,860 - DEBUG - send_text - Current height is 1.82 meters
+2026-11-17 17:52:12,986 - DEBUG - send_text - Current height is 2.02 meters
+2026-11-17 17:52:13,095 - DEBUG - send_text - Current height is 2.21 meters
+2026-11-17 17:52:13,227 - DEBUG - send_text - Current height is 2.41 meters
+2026-11-17 17:52:13,341 - DEBUG - send_text - Current height is 2.59 meters
+2026-11-17 17:52:13,451 - DEBUG - send_text - Current height is 2.77 meters
+2026-11-17 17:52:13,557 - DEBUG - send_text - Current height is 2.93 meters
+2026-11-17 17:52:13,662 - DEBUG - send_text - Current height is 3.08 meters
+2026-11-17 17:52:13,764 - DEBUG - send_text - Current height is 3.22 meters
+2026-11-17 17:52:13,867 - DEBUG - send_text - Current height is 3.35 meters
+2026-11-17 17:52:13,987 - DEBUG - send_text - Current height is 3.47 meters
+2026-11-17 17:52:14,111 - DEBUG - send_text - Current height is 3.57 meters
+2026-11-17 17:52:14,238 - DEBUG - send_text - Current height is 3.67 meters
+2026-11-17 17:52:14,353 - DEBUG - send_text - Current height is 3.75 meters
+2026-11-17 17:52:14,631 - DEBUG - send_text - Current height is 3.92 meters
+2026-11-17 17:52:14,631 - DEBUG - send_text - Takeoff altitude reached: 3.92m
+2026-11-18 14:45:52,930 - INFO - _connect - Heartbeat from system (system 1 component 0)
+2026-11-18 14:45:52,945 - DEBUG - send_text - Mode changed to 4
+2026-11-18 14:45:52,958 - DEBUG - send_text - ARMED !!!!
+2026-11-18 14:45:52,967 - DEBUG - send_text - Taking off...
+2026-11-18 14:45:53,181 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-18 14:45:53,396 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-18 14:45:53,600 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-18 14:45:53,798 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-18 14:45:53,993 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-18 14:45:54,204 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-18 14:45:54,410 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-18 14:45:54,625 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-18 14:45:54,837 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-18 14:45:55,043 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-18 14:45:55,257 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-18 14:45:55,453 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-18 14:45:55,647 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-18 14:45:55,843 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-18 14:45:56,043 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-18 14:45:56,233 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-18 14:45:56,440 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-18 14:45:57,048 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-18 14:45:57,566 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-18 14:45:58,145 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-18 14:45:58,645 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-18 14:45:59,153 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-18 14:45:59,576 - DEBUG - send_text - Current height is 0.0 meters
+2026-11-18 14:45:59,833 - DEBUG - send_text - Current height is 0.05 meters
+2026-11-18 14:46:00,090 - DEBUG - send_text - Current height is 0.15 meters
+2026-11-18 14:46:00,349 - DEBUG - send_text - Current height is 0.31 meters
+2026-11-18 14:46:00,608 - DEBUG - send_text - Current height is 0.53 meters
+2026-11-18 14:46:00,870 - DEBUG - send_text - Current height is 0.81 meters
+2026-11-18 14:46:01,125 - DEBUG - send_text - Current height is 1.16 meters
+2026-11-18 14:46:01,398 - DEBUG - send_text - Current height is 1.59 meters
+2026-11-18 14:46:01,649 - DEBUG - send_text - Current height is 2.07 meters
+2026-11-18 14:46:01,909 - DEBUG - send_text - Current height is 2.55 meters
+2026-11-18 14:46:02,168 - DEBUG - send_text - Current height is 2.97 meters
+2026-11-18 14:46:02,423 - DEBUG - send_text - Current height is 3.32 meters
+2026-11-18 14:46:02,686 - DEBUG - send_text - Current height is 3.6 meters
+2026-11-18 14:46:02,936 - DEBUG - send_text - Current height is 3.81 meters
+2026-11-18 14:46:03,190 - DEBUG - send_text - Current height is 3.95 meters
+2026-11-18 14:46:03,191 - DEBUG - send_text - Takeoff altitude reached: 3.95m
