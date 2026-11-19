@@ -28,6 +28,12 @@ CARRIED_BALL_OFFSET_METERS = 0.15
 RTL_TIMEOUT_SECONDS = 180
 
 
+def ensure_armed_for_takeoff(mavlink: MavLinkHandler) -> None:
+    if not mavlink.is_armed():
+        mavlink.arm()
+    mavlink.wait_for_arm_state(True, timeout=60)
+
+
 def world_xy_to_gps(
     origin_latitude: float,
     origin_longitude: float,
@@ -68,7 +74,7 @@ class RandomRedBallPickup:
                 ):
                     self._drone_pose = Pose()
                     self._drone_pose.CopyFrom(pose)
-                elif pose.name.startswith(RED_BALL_PREFIX):
+                elif pose.name.startswith(RED_BALL_PREFIX) and "::" not in pose.name:
                     ball_pose = Pose()
                     ball_pose.CopyFrom(pose)
                     self._red_ball_poses[pose.name] = ball_pose
@@ -262,8 +268,7 @@ def main() -> None:
 
     print(f"Flying to random red ball {ball_name}.", flush=True)
     mavlink.change_flight_mode(FlightMode.GUIDED)
-    if not mavlink.is_armed():
-        mavlink.arm()
+    ensure_armed_for_takeoff(mavlink)
     mavlink.takeoff(
         FLIGHT_ALTITUDE_METERS,
         wait_until_reached=True,
@@ -277,6 +282,8 @@ def main() -> None:
         timeout=120,
     )
     mavlink.land(wait_until_reached=True, timeout=90)
+    print("Touchdown reached; waiting for SITL to disarm.", flush=True)
+    mavlink.wait_for_arm_state(False, timeout=30)
 
     pickup.collect_ball(ball_name)
     print(f"Collected {ball_name}; taking off with the ball.", flush=True)
@@ -290,8 +297,7 @@ def main() -> None:
     )
     try:
         mavlink.change_flight_mode(FlightMode.GUIDED)
-        if not mavlink.is_armed():
-            mavlink.arm()
+        ensure_armed_for_takeoff(mavlink)
         follower.start()
         mavlink.takeoff(
             FLIGHT_ALTITUDE_METERS,

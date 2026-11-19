@@ -285,6 +285,31 @@ class MavLinkHandler:
             msg = self._get_message("HEARTBEAT")
         return bool(msg.base_mode & mavutil.mavlink.MAV_MODE_FLAG_SAFETY_ARMED)
 
+    def wait_for_arm_state(self, armed, timeout=10):
+        if timeout <= 0:
+            raise ValueError("timeout must be positive")
+
+        deadline = time.monotonic() + timeout
+        while True:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                break
+
+            msg = self._get_message("HEARTBEAT", timeout=remaining)
+            if msg is None:
+                break
+            if msg.type == mavutil.mavlink.MAV_TYPE_GCS:
+                continue
+
+            current_state = bool(
+                msg.base_mode & mavutil.mavlink.MAV_MODE_FLAG_SAFETY_ARMED
+            )
+            if current_state == armed:
+                return True
+
+        state = "armed" if armed else "disarmed"
+        raise TimeoutError(f"Timed out waiting for the vehicle to become {state}")
+
     def get_curr_mode(self):
         msg=self._get_message("HEARTBEAT")
         while msg.type ==6: # 6 is type GCS, we want to ignore these
