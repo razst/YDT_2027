@@ -15,7 +15,7 @@ WORLD_SDF = Path(__file__).with_name("ydt_2027_iris.sdf")
 
 MIN_BALLS = 10
 MAX_BALLS = 30
-SPAWN_INTERVAL_SECONDS = 2
+SPAWN_INTERVAL_SECONDS = 0
 BALL_RADIUS = 0.035
 BALL_MASS_KG = 0.10
 BALL_INERTIA_KG_M2 = 4.9e-5
@@ -108,12 +108,15 @@ def spawn_balls(node: Node) -> None:
     count = random.randint(MIN_BALLS, MAX_BALLS)
     positions = random_positions(count)
     colors = list(BALL_COLORS.items())
+    ball_colors = [random.choice(colors) for _ in range(count)]
+    ball_colors[0] = ("red", BALL_COLORS["red"])
     run_id = f"{random.getrandbits(32):08x}"
     print(f"Spawning {count} balls at random positions.", flush=True)
 
-    for index, position in enumerate(positions, start=1):
-        color_name, color = random.choice(colors)
-        name = f"random_ball_{run_id}_{index:02d}"
+    for index, (position, (color_name, color)) in enumerate(
+        zip(positions, ball_colors), start=1
+    ):
+        name = f"random_ball_{color_name}_{run_id}_{index:02d}"
         request = EntityFactory()
         request.sdf = ball_sdf(name, position, color)
 

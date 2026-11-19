@@ -5,7 +5,7 @@ from venv import logger
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from mavLink_handler import MavLinkHandler
+from mavLink_handler import FlightMode, MavLinkHandler
 from constants import *
 
 
@@ -18,10 +18,10 @@ except Exception as e:
     logger.error(f"Error: {e}")
     quit()
 logger.info("Connected to FC, about to ARM...")
-mavLink.change_flight_mode(4)  # Change flight mode to GUIDED
+mavLink.change_flight_mode(FlightMode.GUIDED)
 mavLink.arm()  # Attempt to arm the drone
-mavLink.takeoff(4,True,0.1)  # Attempt to take off to an altitude of 3 meters
-#logger.info("Takeoff completed.")
-#mavLink.send_ned_velocity(2, 0, 0, 500)  # Move downwards for 5 seconds
-#mavLink.land(True)  # Attempt to land the drone
+mavLink.takeoff(3,True,0.1)  # Attempt to take off to an altitude of 3 meters
+logger.info("Takeoff completed.")
+# mavLink.send_ned_velocity(2, 0, 0, 500)  # Move downwards for 5 seconds
+mavLink.land(True)  # Attempt to land the drone
 #logger.info("Landing completed.")

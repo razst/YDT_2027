@@ -1,13 +1,14 @@
 # run Gazebo with the balls defined in the Iris world
 # run from the gazebo/ directory
-gz sim -v4 -r ydt_2027_iris.sdf
-
+python3 run_sim_with_balls.py
 
 # run ardupilot SITL with gazebo plugin
 sim_vehicle.py -v ArduCopter -f gazebo-iris --model JSON --map --console
 
+# in a third terminal, run the SITL-only pickup-and-RTL mission
+python3 ../src/collect_random_red_ball.py
 
-# in a third terminal, run the SITL-only ball pickup and climb mission
+# or run the fixed pickup-ball test mission
 python3 ../src/collect_ball.py
 
 

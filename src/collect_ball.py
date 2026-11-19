@@ -14,7 +14,7 @@ from gz.msgs.pose_v_pb2 import Pose_V
 from gz.transport import Node
 
 from constants import MAV_COM, MAV_MSG_FREQ
-from mavLink_handler import MavLinkHandler
+from mavLink_handler import FlightMode, MavLinkHandler
 
 
 WORLD_NAME = "iris_runway"
@@ -235,7 +235,7 @@ def main() -> None:
     )
 
     print("Starting the SITL ball-collection mission.", flush=True)
-    mavlink.change_flight_mode(4)
+    mavlink.change_flight_mode(FlightMode.GUIDED)
     mavlink.arm()
     mavlink.takeoff(FLIGHT_ALTITUDE_METERS, wait_until_reached=True, tolerance=0.2)
     mavlink.fly_gps_pos(
@@ -248,7 +248,7 @@ def main() -> None:
     mavlink.land(wait_until_reached=True)
 
     pickup.collect_ball()
-    mavlink.change_flight_mode(4)
+    mavlink.change_flight_mode(FlightMode.GUIDED)
     if not mavlink.is_armed():
         mavlink.arm()
     mavlink.takeoff(FLIGHT_ALTITUDE_METERS)

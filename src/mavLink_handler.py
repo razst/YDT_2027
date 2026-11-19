@@ -1,8 +1,19 @@
+from enum import IntEnum
+
 from pymavlink import mavutil
 import math
 import time
 from constants import*
 from logger_handler import logger
+
+
+class FlightMode(IntEnum):
+    STABILIZE = 0
+    GUIDED = 4
+    LOITER = 5
+    RTL = 6
+    LAND = 9
+
 
 class NotGuidedException(Exception):
     def __init__(self, message="Drone not in GUIDED mode"):
@@ -23,14 +34,14 @@ class MavLinkHandler:
     def _check_guided_mode(self):
         mode = self.get_curr_mode()
         logger.debug(f"mode={mode}")
-        if mode!=4:
+        if mode != FlightMode.GUIDED:
             raise NotGuidedException
         else:
             return True 
     def check_until_guided(self):
         mode = self.get_curr_mode()
         logger.debug(f"mode={mode}")
-        while mode != 4:
+        while mode != FlightMode.GUIDED:
             mode = self.get_curr_mode()
             logger.debug(f"mode={mode}")
     def _connect(self,connection_string,msg_frq):
@@ -227,24 +238,24 @@ class MavLinkHandler:
         self._connection.mav.statustext_send(mavutil.mavlink.MAV_SEVERITY_WARNING, bytes(msg,'utf-8'))
         logger.debug(msg)
 
-    def change_flight_mode(self,mode:int):
+    def change_flight_mode(self, mode: FlightMode):
         # ******* Change flight mode ********
-        # Change flight mode. 0-Stabilize, 4-Guided, 5-Loiter, 6-RTL, 9-Land
         # mode values: https://ardupilot.org/copter/docs/parameters.html#fltmode1
         # see also https://ardupilot.org/dev/docs/mavlink-get-set-flightmode.html &
+        mode = FlightMode(mode)
         self._connection.mav.command_long_send(self._connection.target_system, self._connection.target_component,
-                                                mavutil.mavlink.MAV_CMD_DO_SET_MODE, 0, 1, mode, 0, 0, 0, 0, 0)
+                                                mavutil.mavlink.MAV_CMD_DO_SET_MODE, 0, 1, int(mode), 0, 0, 0, 0, 0)
         msg = self._connection.recv_match(type='COMMAND_ACK',blocking=True)
         if msg is None:
-            error_msg = f"Timeout waiting for ACK to change mode to {mode}"
+            error_msg = f"Timeout waiting for ACK to change mode to {mode.name}"
             self.send_text(error_msg)
             raise MavLinkCommandError(error_msg)
         elif msg.result != 0:
-            error_msg = f"Unable to change to mode {mode}"
+            error_msg = f"Unable to change to mode {mode.name}"
             self.send_text(error_msg)
             raise MavLinkCommandError(error_msg)
         else:
-            self.send_text(f"Mode changed to {mode}")
+            self.send_text(f"Mode changed to {mode.name}")
 
     def arm(self):
         # ******* ARM ********
