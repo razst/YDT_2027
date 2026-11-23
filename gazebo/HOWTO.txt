@@ -8,7 +8,8 @@ sim_vehicle.py -v ArduCopter -f gazebo-iris --model JSON --map --console
 # in a third terminal, run the SITL-only pickup-and-RTL mission
 python3 ../src/collect_random_red_ball.py
 
-# or run the fixed pickup-ball test mission
+# or run the fixed pickup-ball mission: fly to the stationary target, land centered
+# over it, animate it into the catcher, remove it, and take off
 python3 ../src/collect_ball.py
 
 

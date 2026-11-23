@@ -370,6 +370,7 @@
 
     <!-- Pickup target, 2 m forward along world +Y from the Iris starting pose. -->
     <model name="pickup_ball">
+      <static>true</static>
       <pose>0 2 0.035 0 0 0</pose>
       <link name="link">
         <inertial>
@@ -457,6 +458,91 @@
       <uri>model://iris_with_ardupilot</uri>
       <pose degrees="true">0 0 0.195 0 0 90</pose>
     </include>
+
+    <!-- Open-bottom catcher; the mission places the target ball inside and latches it. -->
+    <model name="iris_catcher">
+      <pose degrees="true">0 0 0.195 0 0 90</pose>
+      <link name="link">
+        <inertial>
+          <mass>0.15</mass>
+          <inertia>
+            <ixx>0.001</ixx>
+            <iyy>0.001</iyy>
+            <izz>0.001</izz>
+          </inertia>
+        </inertial>
+        <collision name="roof_collision">
+          <pose>0 0 -0.06 0 0 0</pose>
+          <geometry><box><size>0.18 0.18 0.01</size></box></geometry>
+        </collision>
+        <visual name="roof_visual">
+          <pose>0 0 -0.06 0 0 0</pose>
+          <geometry><box><size>0.18 0.18 0.01</size></box></geometry>
+          <material>
+            <ambient>0.2 0.2 0.2 1</ambient>
+            <diffuse>0.25 0.25 0.25 1</diffuse>
+          </material>
+        </visual>
+        <collision name="left_wall_collision">
+          <pose>-0.085 0 -0.105 0 0 0</pose>
+          <geometry><box><size>0.01 0.18 0.08</size></box></geometry>
+        </collision>
+        <visual name="left_wall_visual">
+          <pose>-0.085 0 -0.105 0 0 0</pose>
+          <geometry><box><size>0.01 0.18 0.08</size></box></geometry>
+          <transparency>0.45</transparency>
+          <material>
+            <ambient>0.2 0.45 0.8 0.7</ambient>
+            <diffuse>0.2 0.45 0.8 0.7</diffuse>
+          </material>
+        </visual>
+        <collision name="right_wall_collision">
+          <pose>0.085 0 -0.105 0 0 0</pose>
+          <geometry><box><size>0.01 0.18 0.08</size></box></geometry>
+        </collision>
+        <visual name="right_wall_visual">
+          <pose>0.085 0 -0.105 0 0 0</pose>
+          <geometry><box><size>0.01 0.18 0.08</size></box></geometry>
+          <transparency>0.45</transparency>
+          <material>
+            <ambient>0.2 0.45 0.8 0.7</ambient>
+            <diffuse>0.2 0.45 0.8 0.7</diffuse>
+          </material>
+        </visual>
+        <collision name="front_wall_collision">
+          <pose>0 -0.085 -0.105 0 0 0</pose>
+          <geometry><box><size>0.18 0.01 0.08</size></box></geometry>
+        </collision>
+        <visual name="front_wall_visual">
+          <pose>0 -0.085 -0.105 0 0 0</pose>
+          <geometry><box><size>0.18 0.01 0.08</size></box></geometry>
+          <transparency>0.45</transparency>
+          <material>
+            <ambient>0.2 0.45 0.8 0.7</ambient>
+            <diffuse>0.2 0.45 0.8 0.7</diffuse>
+          </material>
+        </visual>
+        <collision name="rear_wall_collision">
+          <pose>0 0.085 -0.105 0 0 0</pose>
+          <geometry><box><size>0.18 0.01 0.08</size></box></geometry>
+        </collision>
+        <visual name="rear_wall_visual">
+          <pose>0 0.085 -0.105 0 0 0</pose>
+          <geometry><box><size>0.18 0.01 0.08</size></box></geometry>
+          <transparency>0.45</transparency>
+          <material>
+            <ambient>0.2 0.45 0.8 0.7</ambient>
+            <diffuse>0.2 0.45 0.8 0.7</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <joint name="iris_catcher_mount" type="fixed">
+      <parent>iris_with_ardupilot::iris_with_standoffs::base_link</parent>
+      <child>iris_catcher::link</child>
+      <pose>0 0 0 0 0 0</pose>
+    </joint>
 
     <!-- Downward Camera Model -->
     <model name="downward_camera">
