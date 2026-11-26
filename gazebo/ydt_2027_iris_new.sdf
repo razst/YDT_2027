@@ -1,0 +1,364 @@
+<?xml version="1.0" ?>
+<sdf version="1.9">
+  <world name="triangular_field_world">
+    <physics name="1ms" type="ignore">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <plugin filename="gz-sim-physics-system"
+      name="gz::sim::systems::Physics">
+    </plugin>
+    <plugin
+      filename="gz-sim-sensors-system"
+      name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin filename="gz-sim-user-commands-system"
+      name="gz::sim::systems::UserCommands">
+    </plugin>
+    <plugin filename="gz-sim-scene-broadcaster-system"
+      name="gz::sim::systems::SceneBroadcaster">
+    </plugin>
+    <plugin filename="gz-sim-imu-system"
+      name="gz::sim::systems::Imu">
+    </plugin>
+    <plugin filename="gz-sim-navsat-system"
+      name="gz::sim::systems::NavSat">
+    </plugin>
+
+    <scene>
+      <ambient>1.0 1.0 1.0</ambient>
+      <background>0.8 0.8 0.8</background>
+      <sky></sky>
+    </scene>
+
+    <spherical_coordinates>
+      <latitude_deg>-35.363262</latitude_deg>
+      <longitude_deg>149.165237</longitude_deg>
+      <elevation>584</elevation>
+      <heading_deg>0</heading_deg>
+      <surface_model>EARTH_WGS84</surface_model>
+    </spherical_coordinates>
+
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 20 0 0 0</pose>
+      <diffuse>0.85 0.85 0.85 1</diffuse>
+      <specular>0.8 0.8 0.8 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <!-- ========== TRIANGULAR GRASS FIELD (133m, 90m, 164m) ========== -->
+    <!-- Vertices in XY plane:
+         A = (0.0, 0.0)
+         B = (164.0, 0.0)         -> AB = 164 m
+         C = (111.235, 72.909)    -> AC = 133 m, BC = 90 m
+    -->
+    <model name="triangular_grass_field">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <mesh>
+              <uri>model://triangular_field_mesh/meshes/field_terrain.obj</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+          <surface>
+            <!-- Grass-like contact properties matching reference SDF -->
+            <friction>
+              <ode>
+                <mu>0.65</mu>
+                <mu2>0.65</mu2>
+              </ode>
+              <torsional>
+                <coefficient>0.4</coefficient>
+                <use_patch_radius>true</use_patch_radius>
+                <patch_radius>0.05</patch_radius>
+              </torsional>
+            </friction>
+            <bounce>
+              <restitution_coefficient>0.25</restitution_coefficient>
+              <threshold>0.01</threshold>
+            </bounce>
+            <contact>
+              <ode>
+                <kp>1e6</kp>
+                <kd>100</kd>
+                <max_vel>5.0</max_vel>
+                <min_depth>0.001</min_depth>
+              </ode>
+            </contact>
+          </surface>
+        </collision>
+
+        <visual name="visual">
+          <geometry>
+            <mesh>
+              <uri>model://triangular_field_mesh/meshes/field_terrain.obj</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.15 0.35 0.12 1</ambient>
+            <diffuse>0.25 0.55 0.18 1</diffuse>
+            <specular>0.05 0.08 0.04 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ========== FIELD MARKINGS & ZONES ========== -->
+    <model name="field_markings">
+      <static>true</static>
+      <link name="link">
+                
+         <!-- Divider 1 (parallel to shorter side of blue box, along Y) -->
+        <visual name="divider_line_1">
+          <pose>90.0 21.3 0.01 0 0 1.5708</pose>
+          <geometry><box><size>42.0 0.3 0.02</size></box></geometry>
+          <material>
+            <ambient>0.95 0.95 0.95 1</ambient>
+            <diffuse>0.95 0.95 0.95 1</diffuse>
+          </material>
+        </visual>
+
+        <!-- Divider 2 (parallel to shorter side of blue box, along Y) -->
+        <visual name="divider_line_2">
+          <pose>115.0 34.4 0.01 0 0 1.5708</pose>
+          <geometry><box><size>68.0 0.3 0.02</size></box></geometry>
+          <material>
+            <ambient>0.95 0.95 0.95 1</ambient>
+            <diffuse>0.95 0.95 0.95 1</diffuse>
+          </material>
+        </visual>
+        <!-- Takeoff & Landing Zone (blue rectangle inside middle strip: x = 89..118m) -->
+        <visual name="takeoff_landing_zone">
+          <pose>101.8 3.2 0.015 0 0 0</pose>
+          <geometry><box><size>24.0 4.5 0.02</size></box></geometry>
+          <material>
+            <ambient>0.1 0.3 0.9 0.8</ambient>
+            <diffuse>0.15 0.4 0.95 0.8</diffuse>
+          </material>
+        </visual>
+
+        <!-- Pilot Zone (red rectangle just outside bottom edge below blue zone) -->
+        <visual name="pilot_zone">
+          <pose>101.8 -3.0 0.015 0 0 0</pose>
+          <geometry><box><size>24.0 4.0 0.02</size></box></geometry>
+          <material>
+            <ambient>0.85 0.1 0.1 0.8</ambient>
+            <diffuse>0.95 0.15 0.15 0.8</diffuse>
+          </material>
+        </visual>
+
+        <!-- Drop Zone (yellow circle centered in the right-hand section) -->
+        <visual name="drop_zone_ring">
+          <pose>127.0 21.0 0.015 0 0 0</pose>
+          <geometry><cylinder><radius>9.5</radius><length>0.02</length></cylinder></geometry>
+          <material>
+            <ambient>0.85 0.8 0.1 0.45</ambient>
+            <diffuse>0.95 0.9 0.15 0.45</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ========== SCATTERED BALLS IN LEFT TRIANGLE REGION ========== -->
+    <!-- Common ball properties: radius = 0.035 m, mass = 0.10 kg, I = 4.9e-5 -->
+    <model name="ball_red_1">
+      <pose>25.0 8.0 0.035 0 0 0</pose>
+      <link name="link">
+        <inertial><mass>0.10</mass><inertia><ixx>4.9e-5</ixx><iyy>4.9e-5</iyy><izz>4.9e-5</izz></inertia></inertial>
+        <collision name="collision"><geometry><sphere><radius>0.035</radius></sphere></geometry></collision>
+        <visual name="visual"><geometry><sphere><radius>0.035</radius></sphere></geometry><material><ambient>0.7 0.1 0.1 1</ambient><diffuse>0.95 0.15 0.15 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="ball_yellow_1">
+      <pose>34.0 12.0 0.035 0 0 0</pose>
+      <link name="link">
+        <inertial><mass>0.10</mass><inertia><ixx>4.9e-5</ixx><iyy>4.9e-5</iyy><izz>4.9e-5</izz></inertia></inertial>
+        <collision name="collision"><geometry><sphere><radius>0.035</radius></sphere></geometry></collision>
+        <visual name="visual"><geometry><sphere><radius>0.035</radius></sphere></geometry><material><ambient>0.8 0.75 0.1 1</ambient><diffuse>0.98 0.92 0.15 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="ball_blue_1">
+      <pose>42.0 7.0 0.035 0 0 0</pose>
+      <link name="link">
+        <inertial><mass>0.10</mass><inertia><ixx>4.9e-5</ixx><iyy>4.9e-5</iyy><izz>4.9e-5</izz></inertia></inertial>
+        <collision name="collision"><geometry><sphere><radius>0.035</radius></sphere></geometry></collision>
+        <visual name="visual"><geometry><sphere><radius>0.035</radius></sphere></geometry><material><ambient>0.1 0.15 0.6 1</ambient><diffuse>0.15 0.25 0.95 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="ball_red_2">
+      <pose>52.0 16.0 0.035 0 0 0</pose>
+      <link name="link">
+        <inertial><mass>0.10</mass><inertia><ixx>4.9e-5</ixx><iyy>4.9e-5</iyy><izz>4.9e-5</izz></inertia></inertial>
+        <collision name="collision"><geometry><sphere><radius>0.035</radius></sphere></geometry></collision>
+        <visual name="visual"><geometry><sphere><radius>0.035</radius></sphere></geometry><material><ambient>0.7 0.1 0.1 1</ambient><diffuse>0.95 0.15 0.15 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="ball_yellow_2">
+      <pose>60.0 10.0 0.035 0 0 0</pose>
+      <link name="link">
+        <inertial><mass>0.10</mass><inertia><ixx>4.9e-5</ixx><iyy>4.9e-5</iyy><izz>4.9e-5</izz></inertia></inertial>
+        <collision name="collision"><geometry><sphere><radius>0.035</radius></sphere></geometry></collision>
+        <visual name="visual"><geometry><sphere><radius>0.035</radius></sphere></geometry><material><ambient>0.8 0.75 0.1 1</ambient><diffuse>0.98 0.92 0.15 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="ball_blue_2">
+      <pose>48.0 22.0 0.035 0 0 0</pose>
+      <link name="link">
+        <inertial><mass>0.10</mass><inertia><ixx>4.9e-5</ixx><iyy>4.9e-5</iyy><izz>4.9e-5</izz></inertia></inertial>
+        <collision name="collision"><geometry><sphere><radius>0.035</radius></sphere></geometry></collision>
+        <visual name="visual"><geometry><sphere><radius>0.035</radius></sphere></geometry><material><ambient>0.1 0.15 0.6 1</ambient><diffuse>0.15 0.25 0.95 1</diffuse></material></visual>
+      </link>
+    </model>
+
+    <!-- ========== AXES & NAVSAT ========== -->
+    <model name="axes">
+      <static>1</static>
+      <link name="link">
+        <visual name="r">
+          <visibility_flags>2</visibility_flags>
+          <cast_shadows>0</cast_shadows>
+          <pose>5 0 0.1 0 0 0</pose>
+          <geometry><box><size>10 0.01 0.01</size></box></geometry>
+          <material><ambient>1 0 0 0.8</ambient><diffuse>1 0 0 0.8</diffuse><emissive>1 0 0 0.8</emissive></material>
+        </visual>
+        <visual name="g">
+          <visibility_flags>2</visibility_flags>
+          <cast_shadows>0</cast_shadows>
+          <pose>0 5 0.1 0 0 0</pose>
+          <geometry><box><size>0.01 10 0.01</size></box></geometry>
+          <material><ambient>0 1 0 0.8</ambient><diffuse>0 1 0 0.8</diffuse><emissive>0 1 0 0.8</emissive></material>
+        </visual>
+        <visual name="b">
+          <visibility_flags>2</visibility_flags>
+          <cast_shadows>0</cast_shadows>
+          <pose>0 0 5.1 0 0 0</pose>
+          <geometry><box><size>0.01 0.01 10</size></box></geometry>
+          <material><ambient>0 0 1 0.8</ambient><diffuse>0 0 1 0.8</diffuse><emissive>0 0 1 0.8</emissive></material>
+        </visual>
+        <sensor name="navsat_sensor" type="navsat">
+          <always_on>1</always_on>
+          <update_rate>1</update_rate>
+        </sensor>
+      </link>
+    </model>
+
+    <!-- ========== VEHICLE, CATCHER & DOWNWARD CAMERA ========== -->
+    <include>
+      <uri>model://iris_with_ardupilot</uri>
+      <pose degrees="true">101.8 3.2 0.195 0 0 90</pose>
+    </include>
+
+    <model name="iris_catcher">
+      <pose degrees="true">101.8 3.2 0.195 0 0 90</pose>
+      <link name="link">
+        <inertial>
+          <mass>0.15</mass>
+          <inertia><ixx>0.001</ixx><iyy>0.001</iyy><izz>0.001</izz></inertia>
+        </inertial>
+        <collision name="roof_collision">
+          <pose>0 0 -0.06 0 0 0</pose>
+          <geometry><box><size>0.18 0.18 0.01</size></box></geometry>
+        </collision>
+        <visual name="roof_visual">
+          <pose>0 0 -0.06 0 0 0</pose>
+          <geometry><box><size>0.18 0.18 0.01</size></box></geometry>
+          <material><ambient>0.2 0.2 0.2 1</ambient><diffuse>0.25 0.25 0.25 1</diffuse></material>
+        </visual>
+        <collision name="left_wall_collision">
+          <pose>-0.085 0 -0.105 0 0 0</pose>
+          <geometry><box><size>0.01 0.18 0.08</size></box></geometry>
+        </collision>
+        <visual name="left_wall_visual">
+          <pose>-0.085 0 -0.105 0 0 0</pose>
+          <geometry><box><size>0.01 0.18 0.08</size></box></geometry>
+          <transparency>0.45</transparency>
+          <material><ambient>0.2 0.45 0.8 0.7</ambient><diffuse>0.2 0.45 0.8 0.7</diffuse></material>
+        </visual>
+        <collision name="right_wall_collision">
+          <pose>0.085 0 -0.105 0 0 0</pose>
+          <geometry><box><size>0.01 0.18 0.08</size></box></geometry>
+        </collision>
+        <visual name="right_wall_visual">
+          <pose>0.085 0 -0.105 0 0 0</pose>
+          <geometry><box><size>0.01 0.18 0.08</size></box></geometry>
+          <transparency>0.45</transparency>
+          <material><ambient>0.2 0.45 0.8 0.7</ambient><diffuse>0.2 0.45 0.8 0.7</diffuse></material>
+        </visual>
+        <collision name="front_wall_collision">
+          <pose>0 -0.085 -0.105 0 0 0</pose>
+          <geometry><box><size>0.18 0.01 0.08</size></box></geometry>
+        </collision>
+        <visual name="front_wall_visual">
+          <pose>0 -0.085 -0.105 0 0 0</pose>
+          <geometry><box><size>0.18 0.01 0.08</size></box></geometry>
+          <transparency>0.45</transparency>
+          <material><ambient>0.2 0.45 0.8 0.7</ambient><diffuse>0.2 0.45 0.8 0.7</diffuse></material>
+        </visual>
+        <collision name="rear_wall_collision">
+          <pose>0 0.085 -0.105 0 0 0</pose>
+          <geometry><box><size>0.18 0.01 0.08</size></box></geometry>
+        </collision>
+        <visual name="rear_wall_visual">
+          <pose>0 0.085 -0.105 0 0 0</pose>
+          <geometry><box><size>0.18 0.01 0.08</size></box></geometry>
+          <transparency>0.45</transparency>
+          <material><ambient>0.2 0.45 0.8 0.7</ambient><diffuse>0.2 0.45 0.8 0.7</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <joint name="iris_catcher_mount" type="fixed">
+      <parent>iris_with_ardupilot::iris_with_standoffs::base_link</parent>
+      <child>iris_catcher::link</child>
+      <pose>0 0 0 0 0 0</pose>
+    </joint>
+
+    <model name="downward_camera">
+      <pose>101.8 3.2 0.195 0 0 1.5708</pose>
+      <link name="link">
+        <inertial>
+          <mass>0.01</mass>
+          <inertia><ixx>1.66e-6</ixx><iyy>1.66e-6</iyy><izz>1.66e-6</izz></inertia>
+        </inertial>
+        <collision name="collision"><geometry><box><size>0.02 0.02 0.02</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>0.02 0.02 0.02</size></box></geometry>
+          <material><ambient>0 0 0 1</ambient><diffuse>0 0 0 1</diffuse><specular>0.1 0.1 0.1 1</specular></material>
+        </visual>
+        <sensor name="camera" type="camera">
+          <pose>0 0 0 0 1.5708 0</pose>
+          <always_on>1</always_on>
+          <update_rate>30</update_rate>
+          <visualize>true</visualize>
+          <topic>/iris/downward_camera</topic>
+          <camera>
+            <visibility_mask>1</visibility_mask>
+            <horizontal_fov>1.047</horizontal_fov>
+            <vertical_fov>0.785</vertical_fov>
+            <focal_frame>1</focal_frame>
+            <image><width>640</width><height>480</height></image>
+            <clip><near>0.1</near><far>200</far></clip>
+          </camera>
+        </sensor>
+      </link>
+    </model>
+
+    <joint name="downward_camera_mount" type="fixed">
+      <parent>iris_with_ardupilot::iris_with_standoffs::base_link</parent>
+      <child>downward_camera::link</child>
+      <pose>0 0 0 0 0 0</pose>
+    </joint>
+  </world>
+</sdf>

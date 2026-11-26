@@ -19,3 +19,11 @@ droneV2.log
 src/__pycache__/constants.cpython-312.pyc
 src/__pycache__/mavLink_handler.cpython-312.pyc
 gazebo/logs/
+eeprom.bin
+mav.parm
+mav.tlog
+mav.tlog.raw
+logs/00000001.BIN
+logs/00000002.BIN
+logs/LASTLOG.TXT
+terrain/S36E149.DAT

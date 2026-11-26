@@ -1,3 +1,4 @@
+cd /home/ydt/dev/GitHub/YDT_2027/gazebo
 # run Gazebo with the balls defined in the Iris world
 # run from the gazebo/ directory
 python3 run_sim_with_balls.py
